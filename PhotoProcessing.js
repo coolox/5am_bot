@@ -3,7 +3,7 @@ const fs = require('fs');
 const { createUserFolder } = require('./userUtils');
 
 module.exports = {
-    processIncomingPhoto: async (telegramBot, msg) => {
+    processIncomingPhoto: async (telegramBot, msg, isReady, notReady) => {
     const chatId = msg.chat.id;
     const userId = msg.from.id;
     const photoTimestamp = msg.date;
@@ -13,11 +13,13 @@ module.exports = {
       .split('(')[0]
       .trim();
 
+    if(isReady.get(userId)) {
+
     // Check if the current time is within the allowed time range (4:50 AM - 5:07 AM)
     const currentTime = new Date(photoTimestamp * 1000);
     const isWithinTimeRange =
-      (currentTime.getHours() === 23 && currentTime.getMinutes() >= 0) || // 4:50 AM or later
-      (currentTime.getHours() === 23 && currentTime.getMinutes() <= 50); // 5:07 AM or earlier
+      (currentTime.getHours() === 1 && currentTime.getMinutes() >= 0) || // 4:50 AM or later
+      (currentTime.getHours() === 1 && currentTime.getMinutes() <= 50); // 5:07 AM or earlier
 
     if (!isWithinTimeRange) {
       telegramBot.sendMessage(chatId, 'You can only send a photo between 4:50 AM and 5:07 AM.');
@@ -71,5 +73,7 @@ module.exports = {
       .catch((error) => {
         console.error('Error updating last_photo_timestamp:', error);
       });
+      notReady(userId)
+    }
   },
 };
