@@ -2,8 +2,8 @@ const {UserPhoto, User} = require('./models');
 const fs = require('fs');
 const { createUserFolder } = require('./userUtils');
 
-// Define a map to store the last timestamp of photos sent by each user
-const lastPhotoTimestamps = new Map();
+// Define a map to know if user ready to send photo
+const isReady = new Map();
 
 module.exports = {
   start: (telegramBot, db) => {
@@ -47,11 +47,13 @@ module.exports = {
     telegramBot.on('message', (msg) => {
       const chatId = msg.chat.id;
       const messageText = msg.text;
+      const userId = msg.from.id;
       const photoTimestamp = msg.date;
       console.log('time of the message', new Date(photoTimestamp * 1000))
       if (messageText === '📸 Take a Selfie') {
         // Ask the user to send a photo
         telegramBot.sendMessage(chatId, 'Please take a selfie using the front camera and send it to me.');
+        isReady.set(userId, true)
       } else if (messageText === 'Info') {
         // Provide information on how to send a photo
         const infoMessage = 'To take a selfie, switch to the front camera and click the camera button. After taking the selfie, click the paperclip icon or use the "Attach File" option to send the photo.';
@@ -76,17 +78,19 @@ module.exports = {
       .replace(/[-TZ.]/g, '')
       .split('(')[0]
       .trim()
-      
- // Check if the current time is within the allowed time range (4:50 AM - 5:07 AM)
- const currentTime = new Date(photoTimestamp * 1000);
- const isWithinTimeRange =
-  (currentTime.getHours() === 23 && currentTime.getMinutes() >= 0) || // 4:50 AM or later
-  (currentTime.getHours() === 23 && currentTime.getMinutes() <= 50); // 5:07 AM or earlier
 
- if (!isWithinTimeRange) {
-   telegramBot.sendMessage(chatId, 'You can only send a photo between 4:50 AM and 5:07 AM.');
-   return;
- }
+      if(isReady.get(userId)) {
+        
+        // Check if the current time is within the allowed time range (4:50 AM - 5:07 AM)
+        const currentTime = new Date(photoTimestamp * 1000);
+        const isWithinTimeRange =
+          (currentTime.getHours() === 00 && currentTime.getMinutes() >= 0) || // 4:50 AM or later
+          (currentTime.getHours() === 00 && currentTime.getMinutes() <= 50); // 5:07 AM or earlier
+
+        if (!isWithinTimeRange) {
+          telegramBot.sendMessage(chatId, 'You can only send a photo between 4:50 AM and 5:07 AM.');
+          return;
+        }
 
       createUserFolder(userId);
       
@@ -138,6 +142,9 @@ module.exports = {
         .catch((error) => {
           console.error('Error updating last_photo_timestamp:', error);
         });
+        isReady.delete(userId);
+        console.log('what is Ready',isReady)
+      }
       });
   },
 };
