@@ -1,4 +1,5 @@
 const { User } = require('./models');
+const UserInformation = require('./UserInformation');
 
 module.exports = {
     registerUser: async (telegramBot, msg) => {
@@ -15,13 +16,14 @@ module.exports = {
             user_name: firstName,
           });
           await telegramBot.sendMessage(chatId, `${firstName}! User is created and ready to take a challenge`);
+          UserInformation.userInformation(telegramBot, msg);
         } else {
           // User already exists
           const replyMessage = `Hello, ${firstName}! How can I assist you today?`;
           const keyboard = {
             keyboard: [
-              [{ text: 'Get Local Time' }, { text: 'Info' },
-              { text: '📸 Take a Selfie' }],
+              [{ text: 'Get Local Time' }, { text: 'Info' }],
+              [{ text: '📸 Take a Selfie' }],
             ],
             resize_keyboard: true,
           };
