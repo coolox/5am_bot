@@ -10,7 +10,7 @@ const PhotoProcessing = require('./PhotoProcessing');
 module.exports = {
   start: (telegramBot, db) => {
     // Handle /start command
-telegramBot.onText(/\/start/, async (msg) => {
+  telegramBot.onText(/\/start/, async (msg) => {
   UserRegistration.registerUser(telegramBot, msg);
 });
 
