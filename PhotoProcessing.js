@@ -1,6 +1,7 @@
 const { UserPhoto, User } = require('./models');
 const fs = require('fs');
 const { createUserFolder } = require('./userUtils');
+const isSelfieAspect = require('./isSelfie'); // Import the isSelfie component
 
 module.exports = {
     processIncomingPhoto: async (telegramBot, msg, isReady, notReady) => {
@@ -18,8 +19,8 @@ module.exports = {
     // Check if the current time is within the allowed time range (4:50 AM - 5:07 AM)
     const currentTime = new Date(photoTimestamp * 1000);
     const isWithinTimeRange =
-      (currentTime.getHours() === 1 && currentTime.getMinutes() >= 0) || // 4:50 AM or later
-      (currentTime.getHours() === 1 && currentTime.getMinutes() <= 50); // 5:07 AM or earlier
+      (currentTime.getHours() === 17 && currentTime.getMinutes() >= 0) || // 4:50 AM or later
+      (currentTime.getHours() === 17 && currentTime.getMinutes() <= 50); // 5:07 AM or earlier
 
     if (!isWithinTimeRange) {
       telegramBot.sendMessage(chatId, 'You can only send a photo between 4:50 AM and 5:07 AM.');
@@ -29,7 +30,8 @@ module.exports = {
     createUserFolder(userId);
 
     // Get the file ID of the largest photo
-    const fileId = msg.photo[msg.photo.length - 1].file_id;
+    const largestPhoto = msg.photo[msg.photo.length - 1];
+    const fileId = largestPhoto.file_id;
 
     // Get the file path and save it locally
     const filePath = await telegramBot.downloadFile(fileId, `./storage/${userId}`);
@@ -42,6 +44,22 @@ module.exports = {
 
     // Rename the file to the new name
     fs.renameSync(filePath, `./storage/${userId}/${newFileName}`);
+
+    // Retrieve the photo's details using the Telegram Bot API
+    const photoWidth = largestPhoto.width;
+    const photoHeight = largestPhoto.height;
+
+    // Check if the photo's aspect ratio is within the range of a selfie
+    const isSelfie = isSelfieAspect( photoWidth, photoHeight);
+
+    if (!isSelfie) {
+      // Reject non-selfie photos
+      telegramBot.sendMessage(
+        chatId,
+        'I accept only selfie. Please send a selfie using the front camera.'
+      );
+      return;
+    }  
 
     // Store user data and photo link in the database
     UserPhoto.create({
