@@ -4,7 +4,6 @@ module.exports = {
     userInformation: async (telegramBot, msg) => {
         const chatId = msg.chat.id;
         const userId = msg.from.id;
-
         const info = await User.findOne({ where: { user_id: userId } });
 
         if (info) {

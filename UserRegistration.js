@@ -7,6 +7,7 @@ module.exports = {
         const userId = msg.from.id;
         const firstName = msg.from.first_name;
     
+        const currentTime = new Date(msg.date * 1000);
         const existingUser = await User.findOne({ where: { user_id: userId } });
     
         if (!existingUser) {
@@ -14,6 +15,7 @@ module.exports = {
           await User.create({
             user_id: userId,
             user_name: firstName,
+            last_photo_timestamp: currentTime
           });
           await telegramBot.sendMessage(chatId, `${firstName}! User is created and ready to take a challenge`);
           UserInformation.userInformation(telegramBot, msg);
