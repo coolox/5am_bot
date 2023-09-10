@@ -1,7 +1,7 @@
 const { UserPhoto, User } = require('./models');
 const fs = require('fs');
 const { createUserFolder } = require('./userUtils');
-const isSelfieAspect = require('./isSelfie'); // Import the isSelfie component
+const isSelfieAspect = require('./isSelfie'); 
 const PhotoLimitChecker = require('./PhotoLimitChecker');
 
 module.exports = {
@@ -20,8 +20,8 @@ module.exports = {
         // Check if the current time is within the allowed time range (4:50 AM - 5:07 AM)
         const currentTime = new Date(photoTimestamp * 1000);
         const isWithinTimeRange =
-          (currentTime.getHours() === 22 && currentTime.getMinutes() >= 0) || // 4:50 AM or later
-          (currentTime.getHours() === 22 && currentTime.getMinutes() <= 50); // 5:07 AM or earlier
+          (currentTime.getHours() === 23 && currentTime.getMinutes() >= 0) || // 4:50 AM or later
+          (currentTime.getHours() === 23 && currentTime.getMinutes() <= 50); // 5:07 AM or earlier
         if (!isWithinTimeRange) {
           telegramBot.sendMessage(chatId, 'You can only send a photo between 4:50 AM and 5:07 AM.');
           return;

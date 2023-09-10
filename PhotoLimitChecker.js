@@ -18,9 +18,8 @@ module.exports = {
             currentTime.getMonth() === lastPhotoTimestamp.getMonth() &&
             currentTime.getDate()-1 === lastPhotoTimestamp.getDate() 
         ) {
-            console.log('Im here')
             return true; 
-         
+            
         } else {
             return false;
         }
