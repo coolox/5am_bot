@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize');
-const sequelize = require('./sequelize'); // Import the Sequelize configuration
+const sequelize = require('./sequelize');
 
-// Define the User model
 const User = sequelize.define('user', {
   user_id: {
     type: Sequelize.INTEGER,
@@ -18,11 +17,10 @@ const User = sequelize.define('user', {
   days_in_row: {
     type: Sequelize.INTEGER,
     allowNull: false,
-    defaultValue: 0, // Default value for days_in_row
+    defaultValue: 0, 
   },
 });
 
-// Define the UserPhoto model
 const UserPhoto = sequelize.define('user_photos', {
   photo_id: {
     type: Sequelize.INTEGER,

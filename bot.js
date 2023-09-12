@@ -2,10 +2,9 @@ const UserRegistration = require('./UserRegistration');
 const BasicCommands = require('./BasicCommands');
 const PhotoProcessing = require('./PhotoProcessing');
 
-//feature-branch
-
-// Define a map to store the last timestamp of photos sent by each user
+// Define a map to check if user is ready to send the photo
 const isReady = new Map();
+
 const addReady = (user)=>{
   isReady.set(user, true);
 }
@@ -14,19 +13,20 @@ const notReady = (user)=>{
 }
 
 module.exports = {
-  start: (telegramBot, db) => {
+  start: (telegramBot) => {
     // Handle /start command
-  telegramBot.onText(/\/start/, async (msg) => {
-  UserRegistration.registerUser(telegramBot, msg);
-});
+    telegramBot.onText(/\/start/, async (msg) => {
+      UserRegistration.registerUser(telegramBot, msg);
+    });
 
-// Handle button presses
-telegramBot.on('message', (msg) => {
-  BasicCommands.handleBasicCommands(telegramBot, msg, addReady);
-});
+    // Handle button presses
+    telegramBot.on('message', (msg) => {
+      BasicCommands.handleBasicCommands(telegramBot, msg, addReady);
+    });
 
-// Handle incoming photos
-telegramBot.on('photo', async (msg) => {
-  PhotoProcessing.processIncomingPhoto(telegramBot, msg, isReady, notReady);
-})
-  }}
+    // Handle incoming photos
+    telegramBot.on('photo', async (msg) => {
+      PhotoProcessing.processIncomingPhoto(telegramBot, msg, isReady, notReady);
+    })
+  }
+}

@@ -2,13 +2,11 @@ const TelegramBot = require('node-telegram-bot-api');
 const bot = require('./bot');
 const dotenv = require('dotenv');
 dotenv.config();
-// Replace 'YOUR_API_TOKEN' with your actual Telegram bot API token
 const token = process.env.BOT_TOKEN;
-
 const sequelize = require('./sequelize');
-const UserPhoto = require('./models');
 
-// Sync the model with the database (this creates the table if it doesn't exist)
+
+// Sync the model with the database 
 sequelize.sync()
   .then(() => {
     console.log('Database & tables created!');

@@ -20,16 +20,15 @@ module.exports = {
         // Check if the current time is within the allowed time range (4:50 AM - 5:07 AM)
         const currentTime = new Date(photoTimestamp * 1000);
         const isWithinTimeRange =
-          (currentTime.getHours() === 23 && currentTime.getMinutes() >= 0) || // 4:50 AM or later
-          (currentTime.getHours() === 23 && currentTime.getMinutes() <= 50); // 5:07 AM or earlier
+          (currentTime.getHours() === 08 && currentTime.getMinutes() >= 0) || // 8:00 AM or later
+          (currentTime.getHours() === 09 && currentTime.getMinutes() <= 59); // 9:59 AM or earlier
         if (!isWithinTimeRange) {
-          telegramBot.sendMessage(chatId, 'You can only send a photo between 4:50 AM and 5:07 AM.');
+          telegramBot.sendMessage(chatId, 'You can only send a photo between 8:00 AM and 9:59 AM.');
           return;
         }
 
-        // Check if the user can send a photo today
         const canSendPhoto = await PhotoLimitChecker.receiveOnePhotoPerDay(userId, currentTime);
-        console.log('canSendPhoto=', canSendPhoto)
+
         if (canSendPhoto) {
             createUserFolder(userId);
 
@@ -49,14 +48,13 @@ module.exports = {
             // Rename the file to the new name
             fs.renameSync(filePath, `./storage/${userId}/${newFileName}`);
 
-            // Retrieve the photo's details using the Telegram Bot API
             const photoWidth = largestPhoto.width;
             const photoHeight = largestPhoto.height;
 
             // Check if the photo's aspect ratio is within the range of a selfie
             const isSelfie = isSelfieAspect( photoWidth, photoHeight);
+
             if (!isSelfie) {
-                // Reject non-selfie photos
                 telegramBot.sendMessage(
                   chatId,
                   'I accept only selfie. Please send a selfie using the front camera.'
@@ -94,7 +92,7 @@ module.exports = {
               
             notReady(userId)
         } else {
-        // Reject the photo
+        
         telegramBot.sendMessage(msg.chat.id, 'You can send only one photo per day.');
         }
     }

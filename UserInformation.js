@@ -13,9 +13,10 @@ module.exports = {
 
         if (info) {
             const daysPassed= await calculateDays.calculateDaysSinceLastPhoto(userId)
+
             if (daysPassed>1){
                 telegramBot.sendMessage(chatId, `${info.user_name}! ${daysPassed} days passed from your last photo 😔`);
-                // send message to admin group
+                // Send message to admin group
                 telegramBot.sendMessage(adminGroup, `!!!! ${info.user_name} with user id ${userId} passed ${daysPassed} days. Take him out from the group`);
                 
             } else{
@@ -38,6 +39,6 @@ module.exports = {
       
             telegramBot.sendMessage(chatId, replyMessage, options);
           }
-        }
+    }
   };
  

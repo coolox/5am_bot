@@ -1,13 +1,12 @@
-const { User } = require('./models'); // Assuming you have a User model
+const { User } = require('./models');
 
 module.exports = {
   calculateDaysSinceLastPhoto: async (userId) => {
     try {
-      // Find the user by userId
       const user = await User.findOne({ where: { user_id: userId } });
 
       if (!user || !user.last_photo_timestamp) {
-        return null; // User not found or no photo sent yet
+        return null;
       }
 
       // Calculate the time difference in milliseconds
@@ -21,7 +20,7 @@ module.exports = {
       return daysSinceLastPhoto;
     } catch (error) {
       console.error('Error calculating days since last photo:', error);
-      return null; // Handle the error as needed
+      return null;
     }
   },
 };
