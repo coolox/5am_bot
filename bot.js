@@ -1,6 +1,8 @@
 const UserRegistration = require('./UserRegistration');
+const { User } = require('./models');
 const BasicCommands = require('./BasicCommands');
 const PhotoProcessing = require('./PhotoProcessing');
+const { handleUserReply } = require('./UserReply'); 
 
 // Define a map to check if user is ready to send the photo
 const isReady = new Map();
@@ -11,13 +13,32 @@ const addReady = (user)=>{
 const notReady = (user)=>{
   isReady.delete(user);
 }
+const state = {}; 
 
 module.exports = {
   start: (telegramBot) => {
-    // Handle /start command
     telegramBot.onText(/\/start/, async (msg) => {
-      UserRegistration.registerUser(telegramBot, msg);
-    });
+  
+    const chatId = msg.chat.id;
+    const userId = msg.from.id;
+   
+    const existingUser = await User.findOne({ where: { user_id: userId } });
+    
+    if(!existingUser){
+      telegramBot.sendMessage(chatId, 'Please enter the city you are living in:');
+      state[userId] = { waitingForCity: true };
+    }
+    
+   // UserRegistration.registerUser(telegramBot, msg);
+});
+  telegramBot.on('message', (msg) => {
+    const userId = msg.from.id;
+    const userState = state[userId] || {};
+
+    if (userState.waitingForCity) {
+      handleUserReply(telegramBot, msg, state, addReady, notReady);
+    }
+}); 
 
     // Handle button presses
     telegramBot.on('message', (msg) => {

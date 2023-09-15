@@ -11,6 +11,10 @@ const User = sequelize.define('user', {
     type: Sequelize.TEXT,
     allowNull: false,
   },
+  timezoneOffset: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
   last_photo_timestamp: {
     type: Sequelize.DATE,
   },
