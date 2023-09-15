@@ -18,7 +18,7 @@ module.exports = {
     if(isReady.get(userId)) {
       const user = await User.findOne({ where: { user_id: userId } });
       const offsetHours = user.timezoneOffset
-      const hoursLimit= 5 + offsetHours
+      const hoursLimit= 20 + offsetHours
       console.log('hoursLimit', hoursLimit)
         // Check if the current time is within the allowed time range (4:50 AM - 5:07 AM)
         const currentTime = new Date(photoTimestamp * 1000);
@@ -27,10 +27,11 @@ module.exports = {
         console.log('currentTimeMin', currentTime.getMinutes())
 
         const isWithinTimeRange =
-          (currentTime.getHours() === hoursLimit && currentTime.getMinutes() >= 0) || // 4:50 AM or later
-          (currentTime.getHours() === hoursLimit && currentTime.getMinutes() <= 50); // 5:07 AM or earlier
+          (currentTime.getHours() === hoursLimit && currentTime.getMinutes() >= 0) || // 8:00 PM or later
+          (currentTime.getHours() === hoursLimit+1 && currentTime.getMinutes() >= 0) || // 9:00 PM or later
+          (currentTime.getHours() === hoursLimit+2 && currentTime.getMinutes() <= 50); // 10:50 PM or earlier
         if (!isWithinTimeRange) {
-          telegramBot.sendMessage(chatId, 'You can only send a photo between 4:50 AM and 5:07 AM.');
+          telegramBot.sendMessage(chatId, 'You can only send a photo between 20 PM and 21:50 PM.');
           return;
         }
 
