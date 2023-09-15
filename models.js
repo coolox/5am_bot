@@ -12,13 +12,17 @@ const User = sequelize.define('user', {
     type: Sequelize.TEXT,
     allowNull: false,
   },
+  timezoneOffset: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
   last_photo_timestamp: {
     type: Sequelize.DATE,
   },
   days_in_row: {
     type: Sequelize.INTEGER,
     allowNull: false,
-    defaultValue: 0, // Default value for days_in_row
+    defaultValue: 0, 
   },
 });
 
