@@ -4,23 +4,15 @@ const cityTimezones = require('city-timezones');
 
 
 module.exports = {
-  handleUserReply: async (telegramBot, msg, state, addReady, notReady) => {
+  handleUserReply: async (telegramBot, msg, state) => {
     const userId = msg.from.id;
     const chatId = msg.chat.id;
     const userReply = msg.text.trim();
     const userState = state[userId] || {};
-    
     const city = cityTimezones.lookupViaCity(userReply)[0]
-    console.log('userState.waitForCity', userState.waitingForCity);
 
     if (userState.waitingForCity) {
 
-        // Set the user's city in their state
-        //userState.city = userCity;
-        //state[userId] = userState;
-
-        // Use the timezonefinder library to get the timezone based on the city
-        
             if (city!== undefined) {
             const timezone = ct.getTimezone(city.timezone);
             const timezoneOffset = timezone.utcOffset / 60;

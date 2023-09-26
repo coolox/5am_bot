@@ -13,8 +13,6 @@ module.exports = {
       const currentTime = new Date();
       const lastPhotoTimestamp = user.last_photo_timestamp;
       const timeDifference = currentTime - lastPhotoTimestamp;
-
-      // Calculate the number of days (1 day = 24 * 60 * 60 * 1000 milliseconds)
       const daysSinceLastPhoto = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
 
       return daysSinceLastPhoto;

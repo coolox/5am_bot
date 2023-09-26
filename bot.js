@@ -1,4 +1,3 @@
-const UserRegistration = require('./UserRegistration');
 const { User } = require('./models');
 const BasicCommands = require('./BasicCommands');
 const PhotoProcessing = require('./PhotoProcessing');
@@ -21,7 +20,6 @@ module.exports = {
   
     const chatId = msg.chat.id;
     const userId = msg.from.id;
-   
     const existingUser = await User.findOne({ where: { user_id: userId } });
     
     if(!existingUser){

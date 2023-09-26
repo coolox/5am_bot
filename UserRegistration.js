@@ -7,9 +7,9 @@ module.exports = {
         const chatId = msg.chat.id;
         const userId = msg.from.id;
         const firstName = msg.from.first_name;
-
         const currentTime = new Date(msg.date * 1000);
         const existingUser = await User.findOne({ where: { user_id: userId } });
+        
        if (!existingUser) {
         
           await User.create({

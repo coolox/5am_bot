@@ -18,13 +18,10 @@ module.exports = {
     if(isReady.get(userId)) {
       const user = await User.findOne({ where: { user_id: userId } });
       const offsetHours = user.timezoneOffset
-      const hoursLimit= 20 + offsetHours
-      console.log('hoursLimit', hoursLimit)
+      const hoursLimit= 17 + offsetHours
         // Check if the current time is within the allowed time range (4:50 AM - 5:07 AM)
         const currentTime = new Date(photoTimestamp * 1000);
 
-        console.log('currentTimeHours', currentTime.getHours())
-        console.log('currentTimeMin', currentTime.getMinutes())
 
         const isWithinTimeRange =
           (currentTime.getHours() === hoursLimit && currentTime.getMinutes() >= 0) || // 8:00 PM or later
